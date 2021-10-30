@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+
+
+{% block content %}
+
+
+<div>
+    <a href="{% url 'posts_list' %}"> back to list!!! </a>
+           <a href="{% url 'edit_post' post_pk=post.pk %}" style="border: 1px solid; background-color: gray;border-radius: 2px; padding: 5px; color: white">Edit</a>
+            <a href="{% url 'del_post' post_pk=post.pk %}" style="border: 1px solid; background-color: brown;border-radius: 2px; padding: 5px; color: white">Delete</a>
+
+</div>
+
+
+
+    <div style="border:1px dashed; margin-top: 20px; padding: 10px; ">
+         <a href="{% url 'post_like' post_pk=post.pk %}" style="border: 1px solid; background-color: darkgreen;border-radius: 2px; padding: 5px; color: white">I like it({{post.like}})</a>
+         <a href="{% url 'post_dislike' post_pk=post.pk %}" style="border: 1px solid; background-color: indianred;border-radius: 2px; padding: 5px; color: white">It is a bad ({{post.dislike}})</a>
+        <div style="text-align: center; font-size: 25px; margin: 15px 15px 20px 15px;">
+            {{post.title}}
+        </div>
+
+        <div style="text-align: justify; font-size: 18px">
+                {%if post.image %}
+                    <img src="{{ post.image.url }}" style="margin: 12px; border: 0px; float: left;  max-width: 400px; max-height: 300px;">
+                {% else %}
+                    <img src="/media/images/default/nophoto.png" style="margin: 12px; border: 0px; float: left;  max-width: 400px; max-height: 300px;">
+                {% endif %}
+
+            {{post.text}}
+            <div style="clear:both;"></div>
+        </div>
+
+        <div style="text-align: right; font-size: 15px; margin-top: 50px">
+            {{post.created_date}}
+        </div>
+            <div style="text-align: right;  font-size: 15px; margin: 15px 15px 20px 15px;">
+                {%if post.author%}
+                    {{post.author}}
+                {% else %}
+                    Unknown User
+                {% endif %}
+            </div>
+
+        <div style="text-align: right; font-size: 15px;">
+            Count views: {{post.count_view}}
+
+        </div>
+    </div>
+
+    <div style="border: 1px solid;  width: 50%; margin: 10px auto">
+        <div style="border: 1px solid; padding: 5px 10px; background-color: gray; color: white; font-size: 25px">Add your comment</div>
+        <div style="padding: 10px 10px; margin: 5px 0px">
+            <form method="post">{% csrf_token %}
+                {{comment_form.as_p}}
+                <button type="submit">COMMENT</button>
+            </form>
+        </div>
+    </div>
+    <div style="border: 1px solid; margin: 10px 0px; width: 50%; margin: 0 auto">
+        <div  style="border: 1px solid; padding: 5px 10px; background-color: cornflowerblue; color: white; font-size: 25px">Comments</div>
+        {% for comment in comments%}
+            <div style="border: 1px solid; margin: 5px 10px;">
+                <div style="background-color: gray; color: white; padding: 5px 10px">{{comment.created_date}} <b>{{comment.author}}</b></div>
+                <div style="font-size: 20px; padding: 10px">{{comment.comment_text}}</div>
+                <p></p>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
