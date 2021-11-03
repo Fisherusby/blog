@@ -1,12 +1,13 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    <div style="border: 1px solid; padding: 5px; width: 100px; text-align: center; border-radius: 3px">
-        <a href="{% url 'add_post' %}">+++ add post</a>
+
+    <div class="menublock">
+        <a class="btn" href="{% url 'posts_list' %}">Posts list</a>
+        <a class="btn" href="{% url 'posts_list_dr' %}">Posts list DR</a>
     </div>
-    <div>
-        <h2><a href="{% url 'posts_list' %}">Posts list</a></h2>
-        <h2><a href="{% url 'posts_list_dr' %}">Posts list DR</a></h2>
+    <div class="menublock">
+        <a class="btn" href="{% url 'add_post' %}">+ Add post</a>
     </div>
     {% for post in posts %}
         <div style="border: 1px solid; margin: 5px; padding: 10px; width: 300px">
@@ -20,12 +21,16 @@
                 <div><h3>{{post.title}}</h3></div>
                 <div><p>{{post.created_date.date}}</p></div>
                 <div><p>{{post.author}}</p></div>
+                <div style="text-align: right"><p>Comments count: {{post.comments.count}}</p></div>
                 <div style="text-align: right"><p>{{post.count_view}}</p></div>
             </a>
             <div >
                 <p>
                     <b  style="color: darkgreen;">+{{post.like}}</b>
                     <b  style="color: darkred;">-{{post.dislike}}</b>
+                    {% for hashtag in post.hashtags.all %}
+                        {{hashtag.tag}}&nbsp;
+                    {% endfor %}
                 </p>
             </div>
             <a href="{% url 'edit_post' post_pk=post.pk %}" style="border: 1px solid; background-color: gray;border-radius: 2px; padding: 5px; color: white">Edit</a>

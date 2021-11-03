@@ -5,7 +5,7 @@
         <h2>Add new post</h2>
         <form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
             {{form.as_p}}
-            <button type="submit">UPDATE</button>
+            <button class="btn" type="submit">UPDATE</button>
         </form>
     </div>
 {% endblock %}
