@@ -9,6 +9,13 @@
 </head>
 <body>
 <h1 style="text-align: center; background-color: darkolivegreen">Это блог</h1>
+    <div class="menublock">
+        <a class="btn" href="{% url 'posts_list' %}">Posts list</a>
+        <a class="btn" href="{% url 'hashtag_list' %}">Hashtags list</a>
+        <a class="btn" href="{% url 'category_list' %}">Category list</a>
+        <a class="btn del" href="{% url 'posts_list_dr' %}">Nonpublic posts list </a>
+        <a class="btn" href="{% url 'add_post' %}">+ Add post</a>
+    </div>
 {% block content %}
 {% endblock %}
 </body>

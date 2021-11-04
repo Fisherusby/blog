@@ -11,6 +11,9 @@ urlpatterns = [
     path('edit_post/<int:post_pk>', views.edit_post, name='edit_post'),
     path('post_like/<int:post_pk>', views.post_like, name='post_like'),
     path('post_dislike/<int:post_pk>', views.post_dislike, name='post_dislike'),
+    path('hashtag/<str:ht_tag>', views.post_list_tag, name='post_list_tag'),
+    path('hashtag_list', views.hashtag_list, name='hashtag_list'),
+    path('category_list', views.category_list, name='category_list'),
+    path('category/<int:cat_pk>', views.post_list_cat, name='post_list_cat'),
 ]
 
-#if settings.DEBUG:

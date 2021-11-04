@@ -9,6 +9,14 @@ class Hashtag(models.Model):
         return self.tag
 
 
+class Category(models.Model):
+    title = models.CharField(max_length=64)
+    description = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.title
+
+
 class Post(models.Model):
     title = models.CharField(max_length=128)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -20,6 +28,7 @@ class Post(models.Model):
     dislike = models.PositiveIntegerField(default=0)
     public = models.BooleanField(default=False)
     hashtags = models.ManyToManyField(Hashtag, related_name='posts')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='posts')
 
     def find_hashtags(self):
         tmp = self.text

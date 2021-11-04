@@ -12,8 +12,8 @@
         <div>
         <a class="like" href="{% url 'post_like' post_pk=post.pk %}">I like it({{post.like}})</a>
         <a class="like dis" href="{% url 'post_dislike' post_pk=post.pk %}">It is a bad ({{post.dislike}})</a>
-        {% for hashtag in post.hashtags_lst %}
-                {{hashtag}}&nbsp;
+        {% for hashtag in post.hashtags.all %}
+                <a href="{% url 'post_list_tag' hashtag.tag %}">{{hashtag.tag}}&nbsp;</a>&nbsp;
         {% endfor %}
         </div>
         <div style="text-align: center; font-size: 25px; margin: 15px 15px 20px 15px;">

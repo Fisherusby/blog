@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div>
+        <h2>Hashtags</h2>
+    </div>
+    <div class="menublock">
+        {% for hashtag in hashtags %}
+            <a class="btn" href="{% url 'post_list_tag' hashtag.tag %}">{{hashtag.tag}}</a>
+        {% endfor %}
+    </div>
+
+{% endblock %}

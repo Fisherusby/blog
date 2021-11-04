@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from blog.models import Post, Comment
+from blog.models import Post, Comment, Hashtag, Category
 from blog.forms import PostForm, CommentForm
 from django.http import Http404
+from django.db.models import Count
 
 
 def posts_list(request):
@@ -30,8 +31,8 @@ def post_detail(request, post_pk):
     else:
         post.count_view += 1
         post.save()
-        post.hashtags_lst = post.hashtags.all()
-       # post.html_text = post.html_hashtag
+        # post.hashtags_lst = post.hashtags.all()
+    # post.html_text = post.html_hashtag
 
     comment_form = CommentForm()
     comments = Comment.objects.filter(post=post_pk)
@@ -91,4 +92,38 @@ def post_dislike(request, post_pk):
     post.count_view -= 1
     post.save()
     return redirect('post_detail', post_pk=post_pk)
+
+
+def post_list_tag(request, ht_tag):
+    posts = Post.objects.filter(hashtags__tag=ht_tag, public=True)
+    hashtags = (Hashtag.objects
+                .values('tag')
+                .annotate(tag_count=Count('posts'))
+                .filter(tag_count__gt=0)
+                .order_by('-tag_count')
+                )
+    hashtag = Hashtag.objects.get(tag=ht_tag)
+    return render(request, 'blog/post_list_tag.html', {'posts': posts, 'hashtags': hashtags, 'hashtag': hashtag})
+
+
+def hashtag_list(request):
+    # SELECT tag, COUNT(posts) AS tag_count FROM Hashtag GROUP BY tag ORDER BY tag_count DESC
+    hashtags = (Hashtag.objects
+                .values('tag')
+                .annotate(tag_count=Count('posts'))
+                .filter(tag_count__gt=0)
+                .order_by('-tag_count')
+                )
+    return render(request, 'blog/hashtag_list.html', {'hashtags': hashtags})
+
+
+def category_list(request):
+    cat_list = Category.objects.all()
+    return render(request, 'blog/cat_list.html', {'cat_list': cat_list})
+
+def post_list_cat(request, cat_pk):
+    posts = Post.objects.filter(category=cat_pk, public=True)
+    cat_list = Category.objects.all().annotate(Count('posts')).filter(posts__count__gt=0).order_by('-posts__count')
+    cat = Category.objects.get(pk=cat_pk)
+    return render(request, 'blog/post_list_cat.html', {'posts': posts, 'cat_list': cat_list, 'category': cat})
 
