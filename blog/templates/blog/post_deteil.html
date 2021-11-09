@@ -10,6 +10,11 @@
 
     <div style="border:1px dashed; margin-top: 20px; padding: 10px; ">
         <div>
+
+        <a class="favor" href="{% url 'change_favorite' post_pk=post.pk %}?lastpath={{request.path}}" {% if favorites %} style="background: yellow" {% endif %}>
+            favorites
+        </a>
+
         <a class="like" href="{% url 'post_like' post_pk=post.pk %}">I like it({{post.like}})</a>
         <a class="like dis" href="{% url 'post_dislike' post_pk=post.pk %}">It is a bad ({{post.dislike}})</a>
         {% for hashtag in post.hashtags.all %}

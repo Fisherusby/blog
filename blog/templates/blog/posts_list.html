@@ -17,6 +17,9 @@
                 <div style="text-align: right"><p>{{post.count_view}}</p></div>
             </a>
             <div >
+                <a class="favor" href="{% url 'change_favorite' post_pk=post.pk %}?lastpath={{request.path}}" {% if user in post.favorites.all %} style="background: yellow" {% endif %}>
+                    favorites
+                </a>
                 <p>
                     <b  style="color: darkgreen;">+{{post.like}}</b>
                     <b  style="color: darkred;">-{{post.dislike}}</b>

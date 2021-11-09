@@ -4,10 +4,12 @@ from blog.models import Post, Comment, Hashtag, Category
 from blog.forms import PostForm, CommentForm
 from django.http import Http404
 from django.db.models import Count
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def posts_list(request):
     posts = Post.objects.filter(public=True)
+
     return render(request, "blog/posts_list.html", {'posts': posts})
 
 
@@ -31,13 +33,16 @@ def post_detail(request, post_pk):
     else:
         post.count_view += 1
         post.save()
-        # post.hashtags_lst = post.hashtags.all()
-    # post.html_text = post.html_hashtag
+
+    try:
+        favorite = post.favorites.get(pk=request.user.pk)
+    except ObjectDoesNotExist:
+        favorite = False
 
     comment_form = CommentForm()
     comments = Comment.objects.filter(post=post_pk)
 
-    return render(request, "blog/post_deteil.html", {'post': post, 'comments': comments, 'comment_form': comment_form})
+    return render(request, "blog/post_deteil.html", {'post': post, 'comments': comments, 'comment_form': comment_form, 'favorites': favorite})
 
 
 def add_post(request):
@@ -118,12 +123,38 @@ def hashtag_list(request):
 
 
 def category_list(request):
-    cat_list = Category.objects.all()
+    cat_list = (Category.objects
+                .annotate(Count('posts'))
+                .filter(posts__count__gt=0)
+                .order_by('-posts__count'))
     return render(request, 'blog/cat_list.html', {'cat_list': cat_list})
+
 
 def post_list_cat(request, cat_pk):
     posts = Post.objects.filter(category=cat_pk, public=True)
-    cat_list = Category.objects.all().annotate(Count('posts')).filter(posts__count__gt=0).order_by('-posts__count')
+    cat_list = (Category.objects
+                .annotate(Count('posts'))
+                .filter(posts__count__gt=0)
+                .order_by('-posts__count'))
+
     cat = Category.objects.get(pk=cat_pk)
     return render(request, 'blog/post_list_cat.html', {'posts': posts, 'cat_list': cat_list, 'category': cat})
 
+
+def change_favorite(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    try:
+        favorite = post.favorites.get(pk=request.user.pk)
+        post.favorites.remove(request.user)
+    except ObjectDoesNotExist:
+        post.favorites.add(request.user)
+    post.save()
+    lastpath = request.GET.get('lastpath', False)
+    if lastpath:
+        return redirect(lastpath)
+    return redirect('post_detail', post_pk=post_pk)
+
+
+def favorites_list(request):
+    posts = Post.objects.filter(favorites=request.user.pk)
+    return render(request, "blog/posts_list.html", {'posts': posts})

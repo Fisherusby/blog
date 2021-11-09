@@ -29,6 +29,7 @@ class Post(models.Model):
     public = models.BooleanField(default=False)
     hashtags = models.ManyToManyField(Hashtag, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='posts')
+    favorites = models.ManyToManyField(User, related_name='favorites_posts')
 
     def find_hashtags(self):
         tmp = self.text
@@ -60,9 +61,4 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-
-
-
-
-
 

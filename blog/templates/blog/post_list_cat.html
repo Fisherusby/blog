@@ -27,6 +27,9 @@
             </a>
             <div>
                 <p>
+                                    <a class="favor" href="{% url 'change_favorite' post_pk=post.pk %}?lastpath={{request.path}}" {% if user in post.favorites.all %} style="background: yellow" {% endif %}>
+                    favorites
+                </a>
                     <b  style="color: darkgreen;">+{{post.like}}</b>
                     <b  style="color: darkred;">-{{post.dislike}}</b>
                     {% for hashtag in post.hashtags.all %}

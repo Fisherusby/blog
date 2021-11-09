@@ -15,5 +15,7 @@ urlpatterns = [
     path('hashtag_list', views.hashtag_list, name='hashtag_list'),
     path('category_list', views.category_list, name='category_list'),
     path('category/<int:cat_pk>', views.post_list_cat, name='post_list_cat'),
+    path('change_favorite/<int:post_pk>', views.change_favorite, name='change_favorite'),
+    path('favorites_list', views.favorites_list, name='favorites_list')
 ]
 
