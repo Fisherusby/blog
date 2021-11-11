@@ -16,6 +16,7 @@ urlpatterns = [
     path('category_list', views.category_list, name='category_list'),
     path('category/<int:cat_pk>', views.post_list_cat, name='post_list_cat'),
     path('change_favorite/<int:post_pk>', views.change_favorite, name='change_favorite'),
-    path('favorites_list', views.favorites_list, name='favorites_list')
+    path('favorites_list', views.favorites_list, name='favorites_list'),
+    path('post_review_add/<int:post_pk>', views.post_review_add, name='post_review_add'),
 ]
 

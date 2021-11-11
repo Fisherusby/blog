@@ -14,12 +14,12 @@
         <a class="favor" href="{% url 'change_favorite' post_pk=post.pk %}?lastpath={{request.path}}" {% if favorites %} style="background: yellow" {% endif %}>
             favorites
         </a>
-
         <a class="like" href="{% url 'post_like' post_pk=post.pk %}">I like it({{post.like}})</a>
         <a class="like dis" href="{% url 'post_dislike' post_pk=post.pk %}">It is a bad ({{post.dislike}})</a>
         {% for hashtag in post.hashtags.all %}
                 <a href="{% url 'post_list_tag' hashtag.tag %}">{{hashtag.tag}}&nbsp;</a>&nbsp;
         {% endfor %}
+           <p> <a class="btn" href="{% url 'post_review_add' post_pk=post.pk %}">My review. </a>Rank: {{avg_rang}} Reviews: {{post.reviews.count}}</p>
         </div>
         <div style="text-align: center; font-size: 25px; margin: 15px 15px 20px 15px;">
             {{post.title}}
@@ -79,4 +79,15 @@
         {% endfor %}
     </div>
 
+    <div style="border: 1px solid; margin: 10px 0px; width: 50%; margin: 0 auto">
+        <div  style="border: 1px solid; padding: 5px 10px; background-color: cornflowerblue; color: white; font-size: 25px">Reviews</div>
+        {% for review in reviews%}
+            <div style="border: 1px solid; margin: 5px 10px;">
+                <div style="background-color: gray; color: white; padding: 5px 10px">{{review.author}}</b></div>
+                <div style="font-size: 25px; padding: 10px; ">Rank: {{review.rang}}</div>
+                <div style="font-size: 20px; padding: 10px">{{review.text}}</div>
+                <p></p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

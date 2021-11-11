@@ -23,6 +23,7 @@
                 <p>
                     <b  style="color: darkgreen;">+{{post.like}}</b>
                     <b  style="color: darkred;">-{{post.dislike}}</b>
+                    <b  style="color: goldenrod;">{{post.avg_rang}}</b>
                     {% for hashtag in post.hashtags.all %}
                         <a href="{% url 'post_list_tag' hashtag.tag %}">{{hashtag.tag}}&nbsp;</a>
                     {% endfor %}

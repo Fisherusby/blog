@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from blog.models import Post, Comment, Hashtag, Category
-from blog.forms import PostForm, CommentForm
+from blog.models import Post, Comment, Hashtag, Category, Review
+from blog.forms import PostForm, CommentForm, ReviewForm
 from django.http import Http404
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -23,6 +23,8 @@ def posts_list_dr(request):
 def post_detail(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)
 
+    avg_rang = post.reviews.aggregate(Avg('rang'))
+
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -41,8 +43,9 @@ def post_detail(request, post_pk):
 
     comment_form = CommentForm()
     comments = Comment.objects.filter(post=post_pk)
+    reviews = Review.objects.filter(post=post_pk)
 
-    return render(request, "blog/post_deteil.html", {'post': post, 'comments': comments, 'comment_form': comment_form, 'favorites': favorite})
+    return render(request, "blog/post_deteil.html", {'reviews': reviews, 'avg_rang':avg_rang['rang__avg'], 'post': post, 'comments': comments, 'comment_form': comment_form, 'favorites': favorite})
 
 
 def add_post(request):
@@ -158,3 +161,28 @@ def change_favorite(request, post_pk):
 def favorites_list(request):
     posts = Post.objects.filter(favorites=request.user.pk)
     return render(request, "blog/posts_list.html", {'posts': posts})
+
+
+def post_review_add(request, post_pk):
+    post = get_object_or_404(Post,pk=post_pk)
+    post_reviews = post.reviews.filter(author__pk=request.user.pk).first()
+    if request.method == "POST":
+        if post_reviews:
+            review_form = ReviewForm(request.POST, instance=post_reviews)
+        else:
+            review_form = ReviewForm(request.POST)
+
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.author = request.user
+            review.post = post
+            review.save()
+            return redirect('post_detail', post_pk=post_pk)
+    else:
+        if post_reviews:
+            review_form = ReviewForm(instance=post_reviews)
+        else:
+            review_form = ReviewForm()
+
+    return render(request, 'blog/review_post_add.html', {'form': review_form, 'post': post})
+    #return redirect('post_detail', post_pk=post_pk)

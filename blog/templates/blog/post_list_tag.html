@@ -4,6 +4,7 @@
     <div>
         <h2>Posts by hashtag {{hashtag.tag}}</h2>
     </div>
+
     <div class="menublock">
         {% for hashtag in hashtags %}
             <a class="btn" href="{% url 'post_list_tag' hashtag.tag %}">{{hashtag.tag}}</a>

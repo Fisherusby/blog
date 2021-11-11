@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 
 class Hashtag(models.Model):
@@ -31,6 +32,10 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='posts')
     favorites = models.ManyToManyField(User, related_name='favorites_posts')
 
+    def avg_rang(self):
+        tmp = self.reviews.aggregate(Avg('rang'))
+        return tmp['rang__avg']
+
     def find_hashtags(self):
         tmp = self.text
         for sep in '.!-,?':
@@ -61,4 +66,13 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+
+
+class Review(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    rang = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+
+
 

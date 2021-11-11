@@ -9,6 +9,7 @@
 </head>
 <body>
 <h1 style="text-align: center; background-color: darkolivegreen">Это блог</h1>
+<div>Hello, {{user.username}}!</div>
     <div class="menublock">
         <a class="btn" href="{% url 'posts_list' %}">Posts list</a>
         <a class="btn" href="{% url 'hashtag_list' %}">Hashtags list</a>
