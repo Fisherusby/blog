@@ -48,3 +48,8 @@ a{
 .like:hover{
     background: darkolivegreen;
 }
+
+.postlst{
+    display: flex;
+    flex-wrap: wrap;
+}

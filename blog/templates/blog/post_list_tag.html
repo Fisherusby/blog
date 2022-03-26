@@ -12,6 +12,7 @@
     </div>
 
     {% for post in posts %}
+<div class="postlst">
         <div style="border: 1px solid; margin: 5px; padding: 10px; width: 300px">
             <a href="{% url 'post_detail' post_pk=post.pk %}">
                 {%if post.image %}
@@ -40,4 +41,5 @@
             <a href="{% url 'del_post' post_pk=post.pk %}" style="border: 1px solid; background-color: brown;border-radius: 2px; padding: 5px; color: white">Delete</a>
         </div>
     {% endfor %}
+</div>
 {% endblock %}

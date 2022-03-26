@@ -18,5 +18,6 @@ urlpatterns = [
     path('change_favorite/<int:post_pk>', views.change_favorite, name='change_favorite'),
     path('favorites_list', views.favorites_list, name='favorites_list'),
     path('post_review_add/<int:post_pk>', views.post_review_add, name='post_review_add'),
+    path('api/', include('blog.api.urls'))
 ]
 

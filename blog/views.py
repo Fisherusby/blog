@@ -9,7 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def posts_list(request):
     posts = Post.objects.filter(public=True)
-
     return render(request, "blog/posts_list.html", {'posts': posts})
 
 
@@ -22,9 +21,7 @@ def posts_list_dr(request):
 
 def post_detail(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)
-
     avg_rang = post.reviews.aggregate(Avg('rang'))
-
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -53,10 +50,8 @@ def add_post(request):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-
             post.author = request.user
             post.save()
-            post.find_hashtags()
             return redirect('post_detail', post_pk=post.pk)
     else:
         form = PostForm()
@@ -78,7 +73,6 @@ def edit_post(request, post_pk):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
-            post.find_hashtags()
             post.save()
             return redirect('post_detail', post_pk=post.pk)
     else:

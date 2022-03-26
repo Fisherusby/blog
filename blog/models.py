@@ -36,18 +36,23 @@ class Post(models.Model):
         tmp = self.reviews.aggregate(Avg('rang'))
         return tmp['rang__avg']
 
-    def find_hashtags(self):
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # find hashtags in post text
         tmp = self.text
         for sep in '.!-,?':
             tmp = tmp.replace(sep, ' ')
-
         tags = [tag for tag in tmp.split() if tag.startswith('#') and len(tag) > 1]
-
-        ob_tags = []
+        self.hashtags.clear()
         for tag in tags:
             obj, create = Hashtag.objects.get_or_create(tag=tag)
-            ob_tags.append(obj)
-        self.hashtags.set(ob_tags)
+            self.hashtags.add(obj)
+
+        # ob_tags = []
+        # for tag in tags:
+        #     obj, create = Hashtag.objects.get_or_create(tag=tag)
+        #     ob_tags.append(obj)
+        # self.hashtags.set(ob_tags)
 
     def html_hashtag(self):
         tags = self.hashtags.all()
@@ -73,6 +78,3 @@ class Review(models.Model):
     text = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     rang = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
-
-
-
